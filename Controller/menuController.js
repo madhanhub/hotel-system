@@ -30,10 +30,37 @@ class menucontroller{
         _id,main_course,amount
     ){
         const main_update=await menu.findOneAndUpdate({_id},
-            {$pull:{main_dish:{
+            {$set:{main_dish:{
                 main_course,amount
             }}})
             return main_update
+    }
+    static async Side_push(
+        _id,side_course,amount
+    ){
+        const side_push=await menu.findOneAndUpdate({_id},
+            {$push:{side_dish:{
+                side_course,amount
+            }}})
+            return side_push
+    }
+    static async Side_pull(
+        _id,side_course
+    ){
+        const side_pull=await menu.findOneAndUpdate({_id},
+            {$pull:{side_dish:{
+                side_course
+            }}})
+            return side_pull
+    }
+    static async Side_update(
+        _id,side_course,amount
+    ){
+        const side_update=await menu.findOneAndUpdate({_id},
+            {$set:{side_dish:{
+                side_course,amount
+            }}})
+            return side_update
     }
 }
 module.exports=menucontroller

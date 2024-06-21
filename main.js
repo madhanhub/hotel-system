@@ -104,16 +104,48 @@ app.post('/main/pull',async(req,res)=>{
 })
 app.post('/main/update',async(req,res)=>{
     try{
-        // const { _id,main_course}=req.body
-        // const main_pull=await menucontroller.Main_pull(
-        //     _id,main_course
-        //     )
-        const main_update=await menu.findOneAndUpdate({_id:req.body._id},
-            {$set:{main_dish:{
-                main_course:req.body.main_course,
-                 amount:req.body.amount
-            }}})
+        const { _id,main_course,amount}=req.body
+        const main_update=await menucontroller.Main_update(
+            _id,main_course,amount
+            )
+        
             res.status(200).json({message:'main_dish added',data:main_update})
+    }catch(error){
+        res.status(500).json({message:'menu not added'})
+    }
+})
+app.post('/side/push',async(req,res)=>{
+    try{
+        const { _id,side_course,amount}=req.body
+        const side_push=await menucontroller.Side_push(
+            _id,side_course,amount
+            )
+        
+            res.status(200).json({message:'side_dish added',data:side_push})
+    }catch(error){
+        res.status(500).json({message:'menu not added'})
+    }
+})
+app.post('/side/pull',async(req,res)=>{
+    try{
+        const { _id,side_course,amount}=req.body
+        const side_pull=await menucontroller.Side_pull(
+            _id,side_course,amount
+            )
+        
+            res.status(200).json({message:'side_dish added',data:side_pull})
+    }catch(error){
+        res.status(500).json({message:'menu not added'})
+    }
+})
+app.post('/side/update',async(req,res)=>{
+    try{
+        const { _id,side_course,amount}=req.body
+        const side_update=await menucontroller.Side_update(
+            _id,side_course,amount
+            )
+        
+            res.status(200).json({message:'side_dish added',data:side_update})
     }catch(error){
         res.status(500).json({message:'menu not added'})
     }

@@ -11,8 +11,10 @@ const menu=new mongoose.Schema({
             
         }],
         side_dish:[{
-            side_course:{type:String,
-                default:'avaliable'},
+            side_course:{
+                type:String,
+                default:'avaliable'
+                },
             amount:{type:Number}
         }],
         appietizer:[{
