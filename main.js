@@ -150,3 +150,15 @@ app.post('/side/update',async(req,res)=>{
         res.status(500).json({message:'menu not added'})
     }
 })
+app.post('/appietizer/push',async(req,res)=>{
+    try{
+        const { _id,fruits,amount}=req.body
+        const appietizer_push=await menucontroller.Appietizer_push(
+            _id,fruits,amount
+            )
+        
+            res.status(200).json({message:'side_dish added',data:appietizer_push})
+    }catch(error){
+        res.status(500).json({message:'menu not added'})
+    }
+})

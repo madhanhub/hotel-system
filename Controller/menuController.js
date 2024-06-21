@@ -62,5 +62,14 @@ class menucontroller{
             }}})
             return side_update
     }
+    static async Appietizer_push(
+        _id,fruits,amount
+    ){
+        const appietizer_push=await menu.findOneAndUpdate({_id},
+            {$push:{appietizer:{
+                fruits,amount
+            }}})
+            return appietizer_push
+    }
 }
 module.exports=menucontroller
