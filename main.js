@@ -8,10 +8,12 @@ const bodyparser=require('body-parser')
 const admin=require('./Schema/Admin')
 const menu=require('./Schema/Menu')
 const user=require('./Schema/User')
+const user_order=require('./Schema/User_order')
 
 const admincontroller=require('./Controller/AdminController')
 const menucontroller=require('./Controller/menuController')
 const usercontroller = require('./Controller/UserController')
+const ordercontroller=require('./Controller/User_Ordercontroller')
 
 app.use(express.json())
 app.use(morgan('dev'))
@@ -231,5 +233,30 @@ app.get('/user/view',async(req,res)=>{
         res.status(200).json({message:'menu listed',data:menu_list})
     }catch(error){
         res.status(500).json({message:'menu not listed'})
+    }
+})
+app.post('/user/order',async(req,res)=>{
+    try{
+        const{user_id,table_no}=req.body
+        const order=await ordercontroller.User_order(
+            user_id,table_no
+        )
+        res.status(200).json({message:'order placed',data:order})
+    }catch(error){
+        res.status(500).json({message:'order not placed'})
+    }
+})
+app.post('/order/place',async(req,res)=>{
+    try{
+        const{_id,main_course,amount}=req.body
+        const order_find=await menu.findOne({_id,'main_dish.0.main_course':main_course,'main_dish.0.amount':amount})
+        console.log(order_find);
+        const order_place=order_find.main_dish.main_course
+        await user_order.findOneAndUpdate({_id:req.body._id},
+            {$push:{main_dish:{main_course,amount}}})
+            
+            res.status(200).json({message:'order placed',data:order_place})
+    }catch(error){
+        res.status(500).json({message:'order failed'})
     }
 })
