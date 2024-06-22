@@ -7,6 +7,7 @@ const bodyparser=require('body-parser')
 
 const admin=require('./Schema/Admin')
 const menu=require('./Schema/Menu')
+const user=require('./Schema/User')
 
 const admincontroller=require('./Controller/AdminController')
 const menucontroller=require('./Controller/menuController')
@@ -192,5 +193,23 @@ app.get('/menu/list',async(req,res)=>{
             res.status(200).json({message:'menu listed',data:menu_list})
         }catch(error){
             res.status(500).json({message:'menu not listed'})
+        }
+})
+app.post('/user/register',async(req,res)=>{
+   
+    try{
+        const{user_name,user_email,user_password}=req.body      
+        const existing_user=await user.findOne({user_email})
+        if(existing_user){
+            return res.status(409).json({message:'user already exist'})
+        }
+        
+        const user_register=new user({
+            user_name,user_email,user_password
+        }).save()
+        res.status(200).json({message:'user register',data:user_register})
+    
+    }catch(error){
+        res.status(500).json({message:'user registeration failed'})
         }
 })
