@@ -162,3 +162,35 @@ app.post('/appietizer/push',async(req,res)=>{
         res.status(500).json({message:'menu not added'})
     }
 })
+app.post('/appietizer/pull',async(req,res)=>{
+    try{
+        const{_id,fruits}=req.body
+        const app_pull=await menucontroller.Appietizer_pull(
+            _id,
+            fruits
+        )
+        res.status(200).json({message:'appietizer pulled',data:app_pull})
+    }catch(error){
+        res.status(500).json({message:'appieteizer not removed'})
+    }
+})
+app.post('/appietizer/update',async(req,res)=>{
+    try{
+        const{_id,fruits,amount}=req.body
+        const app_update=await menucontroller.Appietizer_update(
+            _id,
+            fruits,amount
+        )
+        res.status(200).json({message:'appietizer pulled',data:app_update})
+    }catch(error){
+        res.status(500).json({message:'appieteizer not removed'})
+    }
+})
+app.get('/menu/list',async(req,res)=>{
+        try{
+            const menu_list=await menu.find({})
+            res.status(200).json({message:'menu listed',data:menu_list})
+        }catch(error){
+            res.status(500).json({message:'menu not listed'})
+        }
+})
