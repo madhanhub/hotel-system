@@ -1,10 +1,11 @@
 const menu=require('../Schema/Menu')
 class menucontroller{
     static async Menu(
-        admin_name
+        // admin_name
+        main_dish,side_dish,appietizer
     ){
         const Menus=await new menu({
-            admin_name
+            main_dish,side_dish,appietizer
         }).save()
         return Menus
     }

@@ -11,6 +11,7 @@ const user=require('./Schema/User')
 
 const admincontroller=require('./Controller/AdminController')
 const menucontroller=require('./Controller/menuController')
+const usercontroller = require('./Controller/UserController')
 
 app.use(express.json())
 app.use(morgan('dev'))
@@ -72,9 +73,9 @@ app.post('/admin/login',async(req,res)=>{
 })
 app.post('/menu',async(req,res)=>{
     try{
-        const {admin_name}=req.body
+        const { main_dish,side_dish,appietizer}=req.body
     const menu_o=await menucontroller.Menu(
-        admin_name
+        main_dish,side_dish,appietizer
     )
         res.status(200).json({messagr:'menu added',data:menu_o})
     }catch(error){
@@ -204,12 +205,31 @@ app.post('/user/register',async(req,res)=>{
             return res.status(409).json({message:'user already exist'})
         }
         
-        const user_register=new user({
+        const user_register=await usercontroller.User_register(
             user_name,user_email,user_password
-        }).save()
+        )
         res.status(200).json({message:'user register',data:user_register})
     
     }catch(error){
         res.status(500).json({message:'user registeration failed'})
         }
+})
+app.post('/user/login',async(req,res)=>{
+    try{
+        const{ user_email,user_password}=req.body
+        const login=await usercontroller.User_login(
+            user_email,user_password
+        )
+        res.status(200).json({message:'login successfully',data:login})
+    }catch(error){
+        res.status(500).json({message:'login failed'})
+    }
+})
+app.get('/user/view',async(req,res)=>{
+    try{
+        const menu_list=await menu.find({})
+        res.status(200).json({message:'menu listed',data:menu_list})
+    }catch(error){
+        res.status(500).json({message:'menu not listed'})
+    }
 })
