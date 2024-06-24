@@ -248,15 +248,14 @@ app.post('/user/order',async(req,res)=>{
 })
 app.post('/order/place',async(req,res)=>{
     try{
-        const{_id,main_course,amount}=req.body
-        const order_find=await menu.findOne({_id,'main_dish.0.main_course':main_course,'main_dish.0.amount':amount})
-        console.log(order_find);
-        const order_place=order_find.main_dish.main_course
-        await user_order.findOneAndUpdate({_id:req.body._id},
-            {$push:{main_dish:{main_course,amount}}})
-            
-            res.status(200).json({message:'order placed',data:order_place})
+        const{_id,main_course,amount,quantity}=req.body
+        const order_place=await ordercontroller.User_order(
+            _id,main_course,amount,quantity
+            )
+        
+        res.status(200).json({message:'order placed',data:order_place})
     }catch(error){
         res.status(500).json({message:'order failed'})
     }
 })
+

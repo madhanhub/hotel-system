@@ -9,6 +9,7 @@ const user_order=new mongoose.Schema({
         },
         main_dish:[{
             main_course:{type:String},
+            quantity:{type:Number},
             amount:{type:Number}
         }],
         side_dish:[{
