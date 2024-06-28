@@ -9,6 +9,7 @@ const admin=require('./Schema/Admin')
 const menu=require('./Schema/Menu')
 const user=require('./Schema/User')
 const user_order=require('./Schema/User_order')
+const bill=require('./Schema/Billing')
 
 const admincontroller=require('./Controller/AdminController')
 const menucontroller=require('./Controller/menuController')
@@ -237,9 +238,9 @@ app.get('/user/view',async(req,res)=>{
 })
 app.post('/user/order',async(req,res)=>{
     try{
-        const{user_id,table_no}=req.body
+        const{user_id,table_no,main_dish,side_dish,appieteizer}=req.body
         const order=await ordercontroller.User_order(
-            user_id,table_no
+            user_id,table_no,main_dish,side_dish,appieteizer
         )
         res.status(200).json({message:'order placed',data:order})
     }catch(error){
@@ -249,7 +250,7 @@ app.post('/user/order',async(req,res)=>{
 app.post('/order/place',async(req,res)=>{
     try{
         const{_id,main_course,amount,quantity}=req.body
-        const order_place=await ordercontroller.User_order(
+        const order_place=await ordercontroller.User_Order(
             _id,main_course,amount,quantity
             )
         
@@ -258,4 +259,49 @@ app.post('/order/place',async(req,res)=>{
         res.status(500).json({message:'order failed'})
     }
 })
-
+app.post('/order/removed',async(req,res)=>{
+    try{
+        const{_id,main_course}=req.body
+        const order_removed=await ordercontroller.User_order_delete(
+            _id,main_course
+            )
+        
+        res.status(200).json({message:'order placed',data:order_removed})
+    }catch(error){
+        res.status(500).json({message:'order failed'})
+    }
+})
+app.post('/order/update',async(req,res)=>{
+    try{
+        const{_id,main_course,amount,quantity}=req.body
+        const order_update=await ordercontroller.User_order_update(
+            _id,main_course,amount,quantity
+            )
+        
+        res.status(200).json({message:'order placed',data:order_update})
+    }catch(error){
+        res.status(500).json({message:'order failed'})
+    }
+})
+app.post('/sidedish/order',async(req,res)=>{
+    try{
+        const{_id,side_course,amount,quantity}=req.body
+        const side_order=await ordercontroller.Side_dish_order(
+            _id,side_course,amount,quantity
+        )
+        res.status(200).json({message:'order placed',data:side_order})
+    }catch(error){
+        res.status(500).json({message:'side dish order failed'})
+    }
+})
+app.post('/bill',async(req,res)=>{
+    try{
+        const{user_id,order_id}=req.body
+        const Bill=new bill({
+            user_id,order_id
+        }).save()
+        res.status(200).json({mmessage:'order bill',data:Bill})
+    }catch(error){
+        res.status(500).json({message:'bill not placed'})
+    }
+})

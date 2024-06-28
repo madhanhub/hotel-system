@@ -2,7 +2,7 @@ const mongoose=require('mongoose')
 const user_order=new mongoose.Schema({
         user_id:{
             type:String,
-            default:Date.now
+            
         },
         table_no:{
             type:Number
@@ -13,10 +13,14 @@ const user_order=new mongoose.Schema({
             amount:{type:Number}
         }],
         side_dish:[{
-            type:String
+            side_course:{type:String},
+            amount:{type:Number},
+            quantity:{type:Number}
         }],
         appietizer:[{
-            type:String
+            fruits:{type:String},
+            amount:{type:Number},
+            quantity:{type:Number}
         }]
 })
 module.exports=mongoose.model('User_order',user_order)
