@@ -6,17 +6,25 @@ const bill=new mongoose.Schema({
         order_id:{
             type:String
         },
-        order_bill:[{
-            main_course:{
-                type:Number
-            },
-            side_course:{
-                type:Number
-            },
-            date:{
-                type:Date,
-                default:Date.now
-            },
+        main_course:[{
+            dish_name:{type:String},
+            amount:{type:Number},
+            quantity:{type:Number},
+            total:{type:Number},
+            date:{type:Date,default:Date.now}
+        }],
+        side_course:[{
+            side_name:{type:String},
+            amount:{type:Number},
+            quantity:{type:Number},
+            total:{type:Number},
+            date:{type:Date,default:Date.now}
+        }],
+        total_amount:[{
+            main_course:{type:Number},
+            side_course:{type:Number},
+            total:{type:Number},
+            date:{type:Date,default:Date.now}
         }]
 })
 module.exports=mongoose.model('Billing',bill)

@@ -305,3 +305,42 @@ app.post('/bill',async(req,res)=>{
         res.status(500).json({message:'bill not placed'})
     }
 })
+app.post('/bill/add',async(req,res)=>{
+    try{
+        const {_id,dish_name,amount,quantity}=req.body
+        var total=amount * quantity
+        const b_add=await bill.findOneAndUpdate({_id},
+            {$push:{main_course:{
+                dish_name,amount,quantity,total
+            }}})
+            res.status(200).json({message:'order bill',data:b_add})
+    }catch(error){
+        res.status(500).json({message:'bill not generated'})
+    }
+})
+app.post('/side/add',async(req,res)=>{
+    try{
+        const {_id,side_name,amount,quantity}=req.body
+        var total=amount * quantity
+        const s_add=await bill.findOneAndUpdate({_id},
+            {$push:{side_course:{
+                side_name,amount,quantity,total
+            }}})
+            res.status(200).json({message:'order bill',data:s_add})
+    }catch(error){
+        res.status(500).json({message:'bill not generated'})
+    }
+})
+app.post('/total/bill',async(req,res)=>{
+    try{
+        const {_id,side_course,main_course}=req.body
+        total=Number(main_course) + Number(side_course)        
+        const t_bill=await bill.findOneAndUpdate({_id},
+            {$push:{total_amount:{
+                side_course,main_course,total
+            }}})
+            res.status(200).json({message:' sir bill',data:t_bill})
+    }catch(error){
+        res.status(500).json({message:'bill not generated'})
+    }
+})
