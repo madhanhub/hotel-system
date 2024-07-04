@@ -11,15 +11,22 @@ const user=require('./Schema/User')
 const user_order=require('./Schema/User_order')
 const bill=require('./Schema/Billing')
 
+const env=require('dotenv').config() 
+const jsonwebtoken=require('jsonwebtoken')
+
 const admincontroller=require('./Controller/AdminController')
 const menucontroller=require('./Controller/menuController')
 const usercontroller = require('./Controller/UserController')
 const ordercontroller=require('./Controller/User_Ordercontroller')
 
+const authorization=require('./function/auth')
+const cors=require('./function/cors')
+
 app.use(express.json())
 app.use(morgan('dev'))
 app.use(bodyparser.json())
 app.use(express.urlencoded({extended:true}))
+app.use(cors)
 
 app.listen(5467,()=>{
     console.log('server run');
@@ -68,13 +75,22 @@ app.post('/admin/register/delete',async(req,res)=>{
 app.post('/admin/login',async(req,res)=>{
     try{
         const {email,password}=req.body
-        const admin_login=await admincontroller.Admin_login(email,password)
-        res.status(200).json({message:'admin login',data:admin_login})
+        const login=await admincontroller.Admin_login(email,password)
+        
+        if(login){
+            
+            let token=await jsonwebtoken.sign({id:login.id},process.env.SECRET)
+            res.setHeader('token',token)
+            res.setHeader('id',login.id)
+            
+            res.status(200).json({message:'admin login',data:token})
+            
+        }
     }catch(error){
         res.status(500).json({message:'login failed'})
     }
 })
-app.post('/menu',async(req,res)=>{
+app.post('/menu',authorization,async(req,res)=>{
     try{
         const { main_dish,side_dish,appietizer}=req.body
     const menu_o=await menucontroller.Menu(
@@ -85,7 +101,7 @@ app.post('/menu',async(req,res)=>{
         res.status(500).json({message:'something wrong'})
     }
 })
-app.post('/main/add',async(req,res)=>{
+app.post('/main/add',authorization,async(req,res)=>{
     try{
         const { _id,main_course,amount}=req.body
         const menu_added=await menucontroller.Main_push(
@@ -96,7 +112,7 @@ app.post('/main/add',async(req,res)=>{
         res.status(500).json({message:'menu not added'})
     }
 })
-app.post('/main/pull',async(req,res)=>{
+app.post('/main/pull',authorization,async(req,res)=>{
     try{
         const { _id,main_course}=req.body
         const main_pull=await menucontroller.Main_pull(
@@ -223,7 +239,19 @@ app.post('/user/login',async(req,res)=>{
         const login=await usercontroller.User_login(
             user_email,user_password
         )
-        res.status(200).json({message:'login successfully',data:login})
+        if(login){
+            {
+              let token= await jsonwebtoken.sign({id:login.id},process.env.SECRET)
+              res.setHeader('token',token)
+              res.setHeader('id',login.id)
+            //   res.setHeader('user_name',Login.user_name)
+            //   res.setHeader('email', Login.email)
+              
+              
+              
+              res.status(200).json({message:"login successfully",data:token})
+            }
+        }
     }catch(error){
         res.status(500).json({message:'login failed'})
     }
@@ -342,5 +370,15 @@ app.post('/total/bill',async(req,res)=>{
             res.status(200).json({message:' sir bill',data:t_bill})
     }catch(error){
         res.status(500).json({message:'bill not generated'})
+    }
+})
+app.post('/just',async(req,res)=>{
+    try{
+        const ju=await user.findOne({})
+        res.status(200).json({message:'success',data:ju})
+
+    }
+    catch(error){
+        res.status(500).json({message:'failed'})
     }
 })
